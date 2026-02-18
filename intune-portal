@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+systemd-run --user --wait --pipe \
+  --property="BindPaths=/opt/microsoft/intune/etc/os-release:/etc/os-release" \
+  --property="BindPaths=/opt/microsoft/intune/etc/os-release:/usr/lib/os-release" \
+  --setenv=LD_PRELOAD=/opt/microsoft/intune/lib/libcrypto.so.3.2.6:/opt/microsoft/intune/lib/libssl.so.3.2.6 \
+  /opt/microsoft/intune/bin/intune-portal
