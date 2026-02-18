@@ -74,9 +74,6 @@ wget -O %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb} "%{pmc}/%{intune_p
 } > %{_datarootdir}/%{name}-%{version}/logs/pre.log
 
 %post
-%systemd_post microsoft-identity-device-broker.service intune-daemon.socket
-%systemd_user_post intune-agent.timer
-
 {
 TMPDIR=$(mktemp -d)
 pushd ${TMPDIR}
@@ -116,6 +113,9 @@ rm -rf "%{intune_dir}"
 popd
 rmdir ${TMPDIR}
 } > %{_datarootdir}/%{name}-%{version}/logs/post.log
+
+%systemd_post microsoft-identity-device-broker.service intune-daemon.socket
+%systemd_user_post intune-agent.timer
 
 %preun
 %systemd_preun microsoft-identity-device-broker.service intune-daemon.socket
