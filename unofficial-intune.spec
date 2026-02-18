@@ -49,6 +49,7 @@ Requires(post): dpkg
 Requires(post): /usr/bin/install
 Requires(post): /usr/bin/mktemp
 
+Requires(postun): sed
 
 %description
 Dynamic rpm packager for intune
@@ -114,6 +115,8 @@ popd
 rmdir ${TMPDIR}
 } > %{_datarootdir}/%{name}-%{version}/logs/post.log
 
+grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.com" >> /etc/hosts
+
 %systemd_post microsoft-identity-device-broker.service intune-daemon.socket
 %systemd_user_post intune-agent.timer
 
@@ -128,6 +131,8 @@ rmdir /opt/microsoft/intune/share/locale/*
 %postun
 %systemd_postun microsoft-identity-device-broker.service intune-daemon.socket
 %systemd_user_postun intune-agent.timer
+
+sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts
 
 %files
 /opt/microsoft/identity-broker
