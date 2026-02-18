@@ -15,7 +15,7 @@
 
 
 Name:           unofficial-intune
-Version:        0.0.3
+Version:        0.0.4
 Release:        1%{?dist}
 Summary:        Dynamic rpm packager for intune
 License:        GPLv3
@@ -175,6 +175,9 @@ sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts
 
 
 %changelog
+* Wed Feb 18 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.4-1
+- something, something, certificate blah blah, something
+
 * Wed Feb 18 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.3-1
 - fix systemd unit handling in post
 
