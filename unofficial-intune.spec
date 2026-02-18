@@ -15,7 +15,7 @@
 
 
 Name:           unofficial-intune
-Version:        0.0.2
+Version:        0.0.3
 Release:        1%{?dist}
 Summary:        Dynamic rpm packager for intune
 License:        GPLv3
@@ -170,5 +170,8 @@ rmdir /opt/microsoft/intune/share/locale/*
 
 
 %changelog
+* Wed Feb 18 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.3-1
+- fix systemd unit handling in post
+
 * Wed Feb 18 2026 ddstreet
 - 
