@@ -27,14 +27,23 @@ Source2:        libssl.so.3.2.6
 Source3:        os-release
 Source4:        common-password
 Source5:        intune-portal
+# systemd presets to force our stuff to be enabled
+Source6:        75-unofficial-intune-system.preset
+Source7:        75-unofficial-intune-user.preset
 
 # for macros.pam
 BuildRequires:  pam
+
+BuildRequires:  systemd-rpm-macros
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
 
 Requires(pre):  wget >= 2
 
 Requires:       java
 Requires:       libpwquality
+Requires:       microsoft-edge
 
 Requires(post): dpkg
 Requires(post): /usr/bin/install
@@ -54,6 +63,8 @@ install -D -m 0755 -t %{buildroot}/opt/microsoft/intune/lib %{SOURCE1} %{SOURCE2
 install -D -m 0644 -t %{buildroot}/opt/microsoft/intune/etc %{SOURCE3}
 install -D -m 0644 -t %{buildroot}%{_pam_confdir} %{SOURCE4}
 install -D -m 0755 -t %{buildroot}%{_bindir} %{SOURCE5}
+install -D -m 0644 -t %{buildroot}%{_presetdir} %{SOURCE6}
+install -D -m 0644 -t %{buildroot}%{_userpresetdir} %{SOURCE7}
 
 %pre
 install -d %{_datarootdir}/%{name}-%{version}/logs
@@ -63,13 +74,16 @@ wget -O %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb} "%{pmc}/%{intune_p
 } > %{_datarootdir}/%{name}-%{version}/logs/pre.log
 
 %post
+%systemd_post microsoft-identity-device-broker.service intune-daemon.socket
+%systemd_user_post intune-agent.timer
+
 {
 TMPDIR=$(mktemp -d)
 pushd ${TMPDIR}
 
 dpkg-deb -x %{_datarootdir}/%{name}-%{version}/debs/%{mib_deb} %{mib_dir}
-install -D -m 0644 %{mib_dir}/opt/microsoft/identity-broker/bin/microsoft-identity-broker /opt/microsoft/identity-broker/bin/microsoft-identity-broker
-install -D -m 0644 %{mib_dir}/opt/microsoft/identity-broker/bin/microsoft-identity-device-broker /opt/microsoft/identity-broker/bin/microsoft-identity-device-broker
+install -D -m 0755 %{mib_dir}/opt/microsoft/identity-broker/bin/microsoft-identity-broker /opt/microsoft/identity-broker/bin/microsoft-identity-broker
+install -D -m 0755 %{mib_dir}/opt/microsoft/identity-broker/bin/microsoft-identity-device-broker /opt/microsoft/identity-broker/bin/microsoft-identity-device-broker
 install -D -m 0644 %{mib_dir}/usr/lib/systemd/system/microsoft-identity-device-broker.service /usr/lib/systemd/system/microsoft-identity-device-broker.service
 install -D -m 0644 %{mib_dir}/usr/share/applications/microsoft-identity-broker.desktop /usr/share/applications/microsoft-identity-broker.desktop
 install -D -m 0644 %{mib_dir}/usr/share/dbus-1/services/com.microsoft.identity.broker1.service /usr/share/dbus-1/services/com.microsoft.identity.broker1.service
@@ -104,15 +118,24 @@ rmdir ${TMPDIR}
 } > %{_datarootdir}/%{name}-%{version}/logs/post.log
 
 %preun
+%systemd_preun microsoft-identity-device-broker.service intune-daemon.socket
+%systemd_user_preun intune-agent.timer
+
 rm -f /opt/microsoft/intune/share/locale/*/LC_MESSAGES/intune.mo
 rmdir /opt/microsoft/intune/share/locale/*/LC_MESSAGES
 rmdir /opt/microsoft/intune/share/locale/*
+
+%postun
+%systemd_postun microsoft-identity-device-broker.service intune-daemon.socket
+%systemd_user_postun intune-agent.timer
 
 %files
 /opt/microsoft/identity-broker
 /opt/microsoft/intune
 %{_pam_confdir}/common-password
 %{_bindir}/intune-portal
+%{_presetdir}/75-unofficial-intune-system.preset
+%{_userpresetdir}/75-unofficial-intune-user.preset
 
 %{_datarootdir}/%{name}-%{version}
 %ghost %{_datarootdir}/%{name}-%{version}/logs/pre.log
