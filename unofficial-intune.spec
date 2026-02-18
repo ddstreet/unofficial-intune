@@ -15,7 +15,7 @@
 
 
 Name:           unofficial-intune
-Version:        0.0.1
+Version:        0.0.2
 Release:        1%{?dist}
 Summary:        Dynamic rpm packager for intune
 License:        GPLv3
