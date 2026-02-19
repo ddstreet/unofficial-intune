@@ -15,7 +15,7 @@
 
 
 Name:           unofficial-intune
-Version:        0.0.5
+Version:        0.0.6
 Release:        1%{?dist}
 Summary:        Dynamic rpm packager for intune
 License:        GPLv3
@@ -180,6 +180,9 @@ sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts
 
 
 %changelog
+* Thu Feb 19 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.6-1
+- ignore errors while removing dirs in preun script
+
 * Thu Feb 19 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.5-1
 - replace the desktop icon path to use our binary in /usr/bin
 
