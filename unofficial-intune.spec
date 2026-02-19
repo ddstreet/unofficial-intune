@@ -130,8 +130,8 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 %systemd_user_preun intune-agent.timer
 
 rm -f /opt/microsoft/intune/share/locale/*/LC_MESSAGES/intune.mo
-rmdir /opt/microsoft/intune/share/locale/*/LC_MESSAGES
-rmdir /opt/microsoft/intune/share/locale/*
+rmdir /opt/microsoft/intune/share/locale/*/LC_MESSAGES ||:
+rmdir /opt/microsoft/intune/share/locale/* ||:
 
 %postun
 %systemd_postun microsoft-identity-device-broker.service intune-daemon.socket
