@@ -46,6 +46,7 @@ Requires:       libpwquality
 Requires:       microsoft-edge
 
 Requires(post): dpkg
+Requires(post): sed
 Requires(post): /usr/bin/install
 Requires(post): /usr/bin/mktemp
 
@@ -91,6 +92,10 @@ install -D -m 0644 %{mib_dir}/usr/share/icons/hicolor/256x256/apps/microsoft-ide
 rm -rf "%{mib_dir}"
 
 dpkg-deb -x %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb} %{intune_dir}
+
+# We need to replace the path to use our binary in /usr/bin since it wraps the real binary
+sed -i -e 's,/opt/microsoft/intune/bin/intune-portal,/usr/bin/intune-portal,' %{intune_dir}/usr/share/applications/intune-portal.desktop
+
 install -D -m 0644 %{intune_dir}/usr/share/pam-configs/intune /usr/share/pam-configs/intune
 install -D -m 0644 %{intune_dir}/usr/share/applications/intune-portal.desktop /usr/share/applications/intune-portal.desktop
 install -D -m 0644 %{intune_dir}/usr/share/icons/hicolor/48x48/apps/intune.png /usr/share/icons/hicolor/48x48/apps/intune.png
