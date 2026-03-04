@@ -12,6 +12,7 @@
 %define intune_path /ubuntu/24.04/prod/pool/main/i/%{intune_name}
 %define intune_deb %{intune_name}_%{intune_version}-noble_amd64.deb
 %define intune_dir %{intune_name}-%{intune_version}
+%define intune_locales cs de en es fr hu id it ja ko nl pl pt-BR pt-PT ru sv tr zh-Hans zh-Hant
 
 %define unofficial_intune_datadir %{_datarootdir}/%{name}-%{version}-%{release}
 
@@ -63,7 +64,10 @@ install -d %{buildroot}%{unofficial_intune_datadir}/debs
 install -d %{buildroot}%{unofficial_intune_datadir}/logs
 install -d %{buildroot}/opt/microsoft/identity-broker/bin
 install -d %{buildroot}/opt/microsoft/intune/bin
-install -d %{buildroot}/opt/microsoft/intune/share/locale
+touch intune.mo
+for lang in %intune_locales; do
+    install -D -m 0644 intune.mo %{buildroot}/opt/microsoft/intune/share/locale/$lang/LC_MESSAGES/intune.mo
+done
 install -D -m 0755 -t %{buildroot}/opt/microsoft/intune/lib %{SOURCE1} %{SOURCE2}
 install -D -m 0644 -t %{buildroot}/opt/microsoft/intune/etc %{SOURCE3}
 install -D -m 0644 -t %{buildroot}%{_pam_confdir} %{SOURCE4}
@@ -116,7 +120,7 @@ install -D -m 0644 %{intune_dir}/lib/systemd/system/intune-daemon.service /lib/s
 install -D -m 0644 %{intune_dir}/lib/systemd/system/intune-daemon.socket /lib/systemd/system/intune-daemon.socket
 install -D -m 0644 %{intune_dir}/lib/systemd/user/intune-agent.service /lib/systemd/user/intune-agent.service
 install -D -m 0644 %{intune_dir}/lib/systemd/user/intune-agent.timer /lib/systemd/user/intune-agent.timer
-for lang in $(ls %{intune_dir}/opt/microsoft/intune/share/locale); do
+for lang in %intune_locales; do
     install -D -m 0644 %{intune_dir}/opt/microsoft/intune/share/locale/${lang}/LC_MESSAGES/intune.mo /opt/microsoft/intune/share/locale/${lang}/LC_MESSAGES/intune.mo
 done
 rm -rf "%{intune_dir}"
@@ -133,10 +137,6 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 %preun
 %systemd_preun microsoft-identity-device-broker.service intune-daemon.socket
 %systemd_user_preun intune-agent.timer
-
-rm -f /opt/microsoft/intune/share/locale/*/LC_MESSAGES/intune.mo
-rmdir /opt/microsoft/intune/share/locale/*/LC_MESSAGES ||:
-rmdir /opt/microsoft/intune/share/locale/* ||:
 
 %postun
 %systemd_postun microsoft-identity-device-broker.service intune-daemon.socket
