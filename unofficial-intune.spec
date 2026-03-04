@@ -97,6 +97,8 @@ dpkg-deb -x %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb} %{intune_dir}
 
 # We need to replace the path to use our binary in /usr/bin since it wraps the real binary
 sed -i -e 's,/opt/microsoft/intune/bin/intune-portal,/usr/bin/intune-portal,' %{intune_dir}/usr/share/applications/intune-portal.desktop
+sed -i -e 's,/opt/microsoft/intune/bin/intune-daemon,/usr/bin/intune-daemon,' %{intune_dir}/lib/systemd/system/intune-daemon.service
+sed -i -e 's,/opt/microsoft/intune/bin/intune-agent,/usr/bin/intune-agent,' %{intune_dir}/lib/systemd/user/intune-agent.service
 
 install -D -m 0644 %{intune_dir}/usr/share/pam-configs/intune /usr/share/pam-configs/intune
 install -D -m 0644 %{intune_dir}/usr/share/applications/intune-portal.desktop /usr/share/applications/intune-portal.desktop
