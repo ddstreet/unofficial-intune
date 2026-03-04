@@ -78,6 +78,9 @@ install -D -m 0644 -t %{buildroot}%{_userpresetdir} %{SOURCE9}
 %pre
 install -d %{unofficial_intune_datadir}/logs
 {
+install -d %{unofficial_intune_datadir}/debs
+rm -vf %{unofficial_intune_datadir}/debs/%{mib_deb}
+rm -vf %{unofficial_intune_datadir}/debs/%{intune_deb}
 wget -O %{unofficial_intune_datadir}/debs/%{mib_deb} "%{pmc}/%{mib_path}/%{mib_deb}"
 wget -O %{unofficial_intune_datadir}/debs/%{intune_deb} "%{pmc}/%{intune_path}/%{intune_deb}"
 } > %{unofficial_intune_datadir}/logs/pre.log
