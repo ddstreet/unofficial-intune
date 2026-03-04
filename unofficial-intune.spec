@@ -27,9 +27,11 @@ Source2:        libssl.so.3.2.6
 Source3:        os-release
 Source4:        common-password
 Source5:        intune-portal
+Source6:        intune-agent
+Source7:        intune-daemon
 # systemd presets to force our stuff to be enabled
-Source6:        75-unofficial-intune-system.preset
-Source7:        75-unofficial-intune-user.preset
+Source8:        75-unofficial-intune-system.preset
+Source9:        75-unofficial-intune-user.preset
 
 # for macros.pam
 BuildRequires:  pam
@@ -64,9 +66,9 @@ install -d %{buildroot}/opt/microsoft/intune/share/locale
 install -D -m 0755 -t %{buildroot}/opt/microsoft/intune/lib %{SOURCE1} %{SOURCE2}
 install -D -m 0644 -t %{buildroot}/opt/microsoft/intune/etc %{SOURCE3}
 install -D -m 0644 -t %{buildroot}%{_pam_confdir} %{SOURCE4}
-install -D -m 0755 -t %{buildroot}%{_bindir} %{SOURCE5}
-install -D -m 0644 -t %{buildroot}%{_presetdir} %{SOURCE6}
-install -D -m 0644 -t %{buildroot}%{_userpresetdir} %{SOURCE7}
+install -D -m 0755 -t %{buildroot}%{_bindir} %{SOURCE5} %{SOURCE6} %{SOURCE7}
+install -D -m 0644 -t %{buildroot}%{_presetdir} %{SOURCE8}
+install -D -m 0644 -t %{buildroot}%{_userpresetdir} %{SOURCE9}
 
 %pre
 install -d %{_datarootdir}/%{name}-%{version}/logs
@@ -144,6 +146,8 @@ sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts
 /opt/microsoft/intune
 %{_pam_confdir}/common-password
 %{_bindir}/intune-portal
+%{_bindir}/intune-daemon
+%{_bindir}/intune-agent
 %{_presetdir}/75-unofficial-intune-system.preset
 %{_userpresetdir}/75-unofficial-intune-user.preset
 
