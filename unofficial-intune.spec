@@ -13,7 +13,7 @@
 %define intune_deb %{intune_name}_%{intune_version}-noble_amd64.deb
 %define intune_dir %{intune_name}-%{intune_version}
 
-%define unofficial_intune_datadir %{_datarootdir}/%{name}-%{version}
+%define unofficial_intune_datadir %{_datarootdir}/%{name}-%{version}-%{release}
 
 Name:           unofficial-intune
 Version:        0.0.6
