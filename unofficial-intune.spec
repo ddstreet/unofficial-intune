@@ -13,6 +13,7 @@
 %define intune_deb %{intune_name}_%{intune_version}-noble_amd64.deb
 %define intune_dir %{intune_name}-%{intune_version}
 
+%define unofficial_intune_datadir %{_datarootdir}/%{name}-%{version}
 
 Name:           unofficial-intune
 Version:        0.0.6
@@ -58,8 +59,8 @@ Requires(postun): sed
 Dynamic rpm packager for intune
 
 %install
-install -d %{buildroot}%{_datarootdir}/%{name}-%{version}/debs
-install -d %{buildroot}%{_datarootdir}/%{name}-%{version}/logs
+install -d %{buildroot}%{unofficial_intune_datadir}/debs
+install -d %{buildroot}%{unofficial_intune_datadir}/logs
 install -d %{buildroot}/opt/microsoft/identity-broker/bin
 install -d %{buildroot}/opt/microsoft/intune/bin
 install -d %{buildroot}/opt/microsoft/intune/share/locale
@@ -71,18 +72,18 @@ install -D -m 0644 -t %{buildroot}%{_presetdir} %{SOURCE8}
 install -D -m 0644 -t %{buildroot}%{_userpresetdir} %{SOURCE9}
 
 %pre
-install -d %{_datarootdir}/%{name}-%{version}/logs
+install -d %{unofficial_intune_datadir}/logs
 {
-wget -O %{_datarootdir}/%{name}-%{version}/debs/%{mib_deb} "%{pmc}/%{mib_path}/%{mib_deb}"
-wget -O %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb} "%{pmc}/%{intune_path}/%{intune_deb}"
-} > %{_datarootdir}/%{name}-%{version}/logs/pre.log
+wget -O %{unofficial_intune_datadir}/debs/%{mib_deb} "%{pmc}/%{mib_path}/%{mib_deb}"
+wget -O %{unofficial_intune_datadir}/debs/%{intune_deb} "%{pmc}/%{intune_path}/%{intune_deb}"
+} > %{unofficial_intune_datadir}/logs/pre.log
 
 %post
 {
 TMPDIR=$(mktemp -d)
 pushd ${TMPDIR}
 
-dpkg-deb -x %{_datarootdir}/%{name}-%{version}/debs/%{mib_deb} %{mib_dir}
+dpkg-deb -x %{unofficial_intune_datadir}/debs/%{mib_deb} %{mib_dir}
 install -D -m 0755 %{mib_dir}/opt/microsoft/identity-broker/bin/microsoft-identity-broker /opt/microsoft/identity-broker/bin/microsoft-identity-broker
 install -D -m 0755 %{mib_dir}/opt/microsoft/identity-broker/bin/microsoft-identity-device-broker /opt/microsoft/identity-broker/bin/microsoft-identity-device-broker
 install -D -m 0644 %{mib_dir}/usr/lib/systemd/system/microsoft-identity-device-broker.service /usr/lib/systemd/system/microsoft-identity-device-broker.service
@@ -93,7 +94,7 @@ install -D -m 0644 %{mib_dir}/usr/share/dbus-1/system.d/com.microsoft.identity.d
 install -D -m 0644 %{mib_dir}/usr/share/icons/hicolor/256x256/apps/microsoft-identity-broker.png /usr/share/icons/hicolor/256x256/apps/microsoft-identity-broker.png
 rm -rf "%{mib_dir}"
 
-dpkg-deb -x %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb} %{intune_dir}
+dpkg-deb -x %{unofficial_intune_datadir}/debs/%{intune_deb} %{intune_dir}
 
 # We need to replace the path to use our binary in /usr/bin since it wraps the real binary
 sed -i -e 's,/opt/microsoft/intune/bin/intune-portal,/usr/bin/intune-portal,' %{intune_dir}/usr/share/applications/intune-portal.desktop
@@ -122,7 +123,7 @@ rm -rf "%{intune_dir}"
 
 popd
 rmdir ${TMPDIR}
-} > %{_datarootdir}/%{name}-%{version}/logs/post.log
+} > %{unofficial_intune_datadir}/logs/post.log
 
 grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.com" >> /etc/hosts
 
@@ -153,11 +154,11 @@ sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts
 %{_presetdir}/75-unofficial-intune-system.preset
 %{_userpresetdir}/75-unofficial-intune-user.preset
 
-%{_datarootdir}/%{name}-%{version}
-%ghost %{_datarootdir}/%{name}-%{version}/logs/pre.log
-%ghost %{_datarootdir}/%{name}-%{version}/logs/post.log
-%ghost %{_datarootdir}/%{name}-%{version}/debs/%{mib_deb}
-%ghost %{_datarootdir}/%{name}-%{version}/debs/%{intune_deb}
+%{unofficial_intune_datadir}
+%ghost %{unofficial_intune_datadir}/logs/pre.log
+%ghost %{unofficial_intune_datadir}/logs/post.log
+%ghost %{unofficial_intune_datadir}/debs/%{mib_deb}
+%ghost %{unofficial_intune_datadir}/debs/%{intune_deb}
 
 %ghost /opt/microsoft/identity-broker/bin/microsoft-identity-broker
 %ghost /opt/microsoft/identity-broker/bin/microsoft-identity-device-broker
