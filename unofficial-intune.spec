@@ -145,7 +145,7 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 %systemd_postun microsoft-identity-device-broker.service intune-daemon.socket
 %systemd_user_postun intune-agent.timer
 
-sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts
+[ $1 -eq 0 ] && sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts ||:
 
 %files
 /opt/microsoft/identity-broker
