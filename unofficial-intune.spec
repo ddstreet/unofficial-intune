@@ -17,7 +17,7 @@
 %define unofficial_intune_datadir %{_datarootdir}/%{name}-%{version}-%{release}
 
 Name:           unofficial-intune
-Version:        0.0.7
+Version:        0.0.8
 Release:        1%{?dist}
 Summary:        Dynamic rpm packager for intune
 License:        GPLv3
@@ -191,6 +191,9 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 
 
 %changelog
+* Thu Mar 05 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.8-1
+- replace wrapper binaries with service overrides
+
 * Wed Mar 04 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.7-1
 - update/add wrapper scripts
 - change service files to call wrapper scripts
