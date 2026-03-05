@@ -29,8 +29,8 @@ Source2:        libssl.so.3.2.6
 Source3:        os-release
 Source4:        common-password
 Source5:        intune-portal
-Source6:        intune-agent
-Source7:        intune-daemon
+Source6:        intune-daemon-override.conf
+Source7:        intune-agent-override.conf
 # systemd presets to force our stuff to be enabled
 Source8:        75-unofficial-intune-system.preset
 Source9:        75-unofficial-intune-user.preset
@@ -72,7 +72,9 @@ done
 install -D -m 0755 -t %{buildroot}/opt/microsoft/intune/lib %{SOURCE1} %{SOURCE2}
 install -D -m 0644 -t %{buildroot}/opt/microsoft/intune/etc %{SOURCE3}
 install -D -m 0644 -t %{buildroot}%{_pam_confdir} %{SOURCE4}
-install -D -m 0755 -t %{buildroot}%{_bindir} %{SOURCE5} %{SOURCE6} %{SOURCE7}
+install -D -m 0755 -t %{buildroot}%{_bindir} %{SOURCE5}
+install -D -m 0644 -t %{buildroot}%{_unitdir}/intune-daemon.service.d %{SOURCE6}
+install -D -m 0644 -t %{buildroot}%{_userunitdir}/intune-agent.service.d %{SOURCE7}
 install -D -m 0644 -t %{buildroot}%{_presetdir} %{SOURCE8}
 install -D -m 0644 -t %{buildroot}%{_userpresetdir} %{SOURCE9}
 
@@ -106,8 +108,6 @@ dpkg-deb -x %{unofficial_intune_datadir}/debs/%{intune_deb} %{intune_dir}
 
 # We need to replace the path to use our binary in /usr/bin since it wraps the real binary
 sed -i -e 's,/opt/microsoft/intune/bin/intune-portal,/usr/bin/intune-portal,' %{intune_dir}/usr/share/applications/intune-portal.desktop
-sed -i -e 's,/opt/microsoft/intune/bin/intune-daemon,/usr/bin/intune-daemon,' %{intune_dir}/lib/systemd/system/intune-daemon.service
-sed -i -e 's,/opt/microsoft/intune/bin/intune-agent,/usr/bin/intune-agent,' %{intune_dir}/lib/systemd/user/intune-agent.service
 
 install -D -m 0644 %{intune_dir}/usr/share/pam-configs/intune /usr/share/pam-configs/intune
 install -D -m 0644 %{intune_dir}/usr/share/applications/intune-portal.desktop /usr/share/applications/intune-portal.desktop
@@ -153,10 +153,10 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 /opt/microsoft/intune
 %{_pam_confdir}/common-password
 %{_bindir}/intune-portal
-%{_bindir}/intune-daemon
-%{_bindir}/intune-agent
 %{_presetdir}/75-unofficial-intune-system.preset
 %{_userpresetdir}/75-unofficial-intune-user.preset
+%{_unitdir}/intune-daemon.service.d
+%{_userunitdir}/intune-agent.service.d
 
 %{unofficial_intune_datadir}
 %ghost %{unofficial_intune_datadir}/logs/pre.log
