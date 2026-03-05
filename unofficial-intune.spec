@@ -63,6 +63,7 @@ Dynamic rpm packager for intune
 install -d %{buildroot}%{unofficial_intune_datadir}/debs
 install -d %{buildroot}%{unofficial_intune_datadir}/logs
 install -d %{buildroot}/opt/microsoft/identity-broker/bin
+install -d %{buildroot}/opt/microsoft/identity-broker/lib
 install -d %{buildroot}/opt/microsoft/intune/bin
 touch intune.mo
 for lang in %intune_locales; do
