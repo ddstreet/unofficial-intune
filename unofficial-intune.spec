@@ -8,7 +8,7 @@
 %define mib_dir %{mib_name}-%{mib_version}
 
 %define intune_name intune-portal
-%define intune_version 1.2511.7
+%define intune_version 1.2511.11
 %define intune_path /ubuntu/24.04/prod/pool/main/i/%{intune_name}
 %define intune_deb %{intune_name}_%{intune_version}-noble_amd64.deb
 %define intune_dir %{intune_name}-%{intune_version}
@@ -133,8 +133,6 @@ popd
 rmdir ${TMPDIR}
 } > %{unofficial_intune_datadir}/logs/post.log
 
-grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.com" >> /etc/hosts
-
 %systemd_post microsoft-identity-device-broker.service intune-daemon.socket
 %systemd_user_post intune-agent.timer
 
@@ -145,8 +143,6 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 %postun
 %systemd_postun microsoft-identity-device-broker.service intune-daemon.socket
 %systemd_user_postun intune-agent.timer
-
-[ $1 -eq 0 ] && sed -i -e '/20.190.152.24 graph.microsoft.com/d' /etc/hosts ||:
 
 %files
 /opt/microsoft/identity-broker
