@@ -8,7 +8,7 @@
 %define mib_dir %{mib_name}-%{mib_version}
 
 %define intune_name intune-portal
-%define intune_version 1.2511.7
+%define intune_version 1.2511.11
 %define intune_path /ubuntu/24.04/prod/pool/main/i/%{intune_name}
 %define intune_deb %{intune_name}_%{intune_version}-noble_amd64.deb
 %define intune_dir %{intune_name}-%{intune_version}
@@ -17,7 +17,7 @@
 %define unofficial_intune_datadir %{_datarootdir}/%{name}-%{version}-%{release}
 
 Name:           unofficial-intune
-Version:        0.0.8
+Version:        0.0.9
 Release:        1%{?dist}
 Summary:        Dynamic rpm packager for intune
 License:        GPLv3
@@ -191,6 +191,9 @@ grep -q graph.microsoft.com /etc/hosts || echo "20.190.152.24 graph.microsoft.co
 
 
 %changelog
+* Tue Apr 07 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.9-1
+- bump intune package version
+
 * Thu Mar 05 2026 Dan Streetman <ddstreet@ieee.org> - 0.0.8-1
 - replace wrapper binaries with service overrides
 
